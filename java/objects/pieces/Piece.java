@@ -7,4 +7,8 @@ public class Piece {
         this.isWhite = isWhite;
     }
 
+    public boolean isLegalMove(int[] curr_space, int[] next_space) {
+        return false;
+    }
+
 }
