@@ -18,11 +18,12 @@ public class Space {
 
     public void setEmpty() {
         isEmpty = true;
+        piece = null;
     }
 
     public void setPiece(Piece piece) {
         this.piece = piece;
-        this.isEmpty = false;
+        this.isEmpty = piece == null;
     }
 
     public String toString() {
@@ -35,5 +36,9 @@ public class Space {
 
     public boolean isEmpty() {
         return isEmpty;
+    }
+
+    public Piece getPiece() {
+        return piece;
     }
 }
