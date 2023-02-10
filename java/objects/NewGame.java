@@ -5,8 +5,8 @@ import objects.pieces.*;
 public class NewGame extends Game {
 
     public NewGame() {
-        this.game_end = false;
-        this.white_turn = true;
+        this.gameEnd = false;
+        this.whiteTurn = true;
         Space[][] board = new Space[][]{new Space[]{
                                                     new Space(new Rook(false)),
                                                     new Space(new Horse(false)),

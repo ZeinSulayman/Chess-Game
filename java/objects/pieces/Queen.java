@@ -16,8 +16,8 @@ public class Queen extends Piece {
         }
     }
 
-    public boolean isLegalMove(int[] curr_space, int[] next_space) {
-            return curr_space[0] == next_space[0] || curr_space[1] == next_space[1] ||
-                    abs(next_space[0] - curr_space[0]) == abs(next_space[1] - curr_space[1]);
+    public boolean isLegalMove(int[] currSpace, int[] nextSpace) {
+            return currSpace[0] == nextSpace[0] || currSpace[1] == nextSpace[1] ||
+                    abs(nextSpace[0] - currSpace[0]) == abs(nextSpace[1] - currSpace[1]);
     }
 }

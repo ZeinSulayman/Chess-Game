@@ -16,7 +16,7 @@ public class Bishop extends Piece {
         }
     }
 
-    public boolean isLegalMove(int[] curr_space, int[] next_space) {
-            return abs(next_space[0] - curr_space[0]) == abs(next_space[1] - curr_space[1]);
+    public boolean isLegalMove(int[] currSpace, int[] nextSpace) {
+            return abs(nextSpace[0] - currSpace[0]) == abs(nextSpace[1] - currSpace[1]);
     }
 }

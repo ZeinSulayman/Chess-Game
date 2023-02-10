@@ -14,19 +14,19 @@ public class Pawn extends Piece {
         }
     }
 
-    public boolean isLegalMove(int[] curr_space, int[] next_space) {
-        if (next_space[1] == curr_space[1]) {
+    public boolean isLegalMove(int[] currSpace, int[] nextSpace) {
+        if (nextSpace[1] == currSpace[1]) {
             if (this.isWhite) {
-                if (curr_space[0] == 6) {
-                    return (next_space[0] - curr_space[0]) == -1 || (next_space[0] - curr_space[0]) == -2;
+                if (currSpace[0] == 6) {
+                    return (nextSpace[0] - currSpace[0]) == -1 || (nextSpace[0] - currSpace[0]) == -2;
                 } else {
-                    return (next_space[0] - curr_space[0]) == -1;
+                    return (nextSpace[0] - currSpace[0]) == -1;
                 }
             } else {
-                if (curr_space[0] == 1) {
-                    return (next_space[0] - curr_space[0]) == 1 || (next_space[0] - curr_space[0]) == 2;
+                if (currSpace[0] == 1) {
+                    return (nextSpace[0] - currSpace[0]) == 1 || (nextSpace[0] - currSpace[0]) == 2;
                 } else {
-                    return (next_space[0] - curr_space[0]) == 1;
+                    return (nextSpace[0] - currSpace[0]) == 1;
                 }
             }
         }
