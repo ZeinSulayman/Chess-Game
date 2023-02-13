@@ -25,6 +25,10 @@ public class Game {
         gameEnd = false;
     }
 
+    public boolean isWhiteTurn() {
+        return whiteTurn;
+    }
+
     public void printBoard() {
         System.out.println("-----------------------------------------------------------------");
         System.out.println("--------|  a  |  b  |  c  |  d  |  e  |  f  |  g  |  h  |--------");
@@ -67,22 +71,23 @@ public class Game {
                 (char) (moveIndices[1][0] + 49);
     }
 
-    public boolean isValidMove(String move, boolean noPrint) {
-        final String INVALID_PAWN_ATTACK = "" + move.charAt(0) + move.charAt(1) + " can only move to " + move.charAt(2) +
-                move.charAt(3) + " unless it is attacking.";
-        int[][] moveIndices = moveToIndices(move);
-//         Check if move is within bounds of the board.
-        if (Arrays.equals(moveIndices[0], moveIndices[1]) || move.length() != 4 ||
+    public boolean checkSensicalMove(String move) {
+        if (move.length() != 4 || move.charAt(0) + move.charAt(1) == move.charAt(2) + move.charAt(3) ||
                 (((int) move.charAt(1) < 49 || (int) move.charAt(1) > 56) ||
                         ((int) move.charAt(3) < 49 || (int) move.charAt(3) > 56)) ||
                 (((int) move.charAt(0) < 97 || (int) move.charAt(0) > 104) ||
                         ((int) move.charAt(2) < 97 || (int) move.charAt(2) > 104))) {
-            if (!noPrint) {
-                System.out.println(move + " is not a valid chess move.");
-                System.out.println("Chess moves are inputted in the format [a-h][1-8][a-h][1-8] \nrepresenting the coordinate of the piece you want to move first then the coordinate of the space you want to move it into.");
-            }
+            System.out.println(move + " is not a valid chess move.");
+            System.out.println("Chess moves are inputted in the format [a-h][1-8][a-h][1-8] \nrepresenting the coordinate of the piece you want to move first then the coordinate of the space you want to move it into.");
             return false;
         }
+        return true;
+    }
+
+    public boolean isValidMove(String move, boolean noPrint) {
+        final String INVALID_PAWN_ATTACK = "" + move.charAt(0) + move.charAt(1) + " can only move to " + move.charAt(2) +
+                move.charAt(3) + " unless it is attacking.";
+        int[][] moveIndices = moveToIndices(move);
 //         Check that current space is not empty.
         if (this.board.spaces[moveIndices[0][0]][moveIndices[0][1]].isEmpty()) {
             if (!noPrint) {
@@ -240,7 +245,6 @@ public class Game {
 
         return true;
     }
-
 
 
     public boolean isClearPath(String move, boolean noPrint) {
@@ -713,80 +717,121 @@ public class Game {
     }
 
     public void playGame() {
-        Scanner scanner = new Scanner(System.in);
-        while (!this.gameEnd) {
-            if (whiteTurn) {
-                printBoard();
-                boolean success = false;
-                labelWhite:
-                while(!success) {
-                    if (isWhiteCheckmate()) {
-                        System.out.println("White Checkmate. Black Wins!");
-                        this.gameEnd = true;
-                        break;
-                    }
-                    if (isWhiteCheck()) {
-                        System.out.println("White Check!");
-                    }
-                    if (isWhiteStalemate()) {
-                        System.out.println("Stalemate. Game ends in a Draw!");
-                        this.gameEnd = true;
-                        break;
-                    }
-                    System.out.println("White move:");
-                    String move = scanner.nextLine();
-                    switch (move) {
-                        case "reset":
-                            Game newGame = new NewGame();
-                            newGame.playGame();
+        if (is2PlayerGame()) {
+            Scanner scanner = new Scanner(System.in);
+            while (!this.gameEnd) {
+                if (whiteTurn) {
+                    printBoard();
+                    boolean success = false;
+                    labelWhite:
+                    while (!success) {
+                        if (isWhiteCheckmate()) {
+                            System.out.println("White Checkmate. Black Wins!");
                             this.gameEnd = true;
-                            break labelWhite;
-                        case "skip":
-                            break labelWhite;
-                        case "end":
+                            break;
+                        }
+                        if (isWhiteCheck()) {
+                            System.out.println("White Check!");
+                        }
+                        if (isWhiteStalemate()) {
+                            System.out.println("Stalemate. Game ends in a Draw!");
                             this.gameEnd = true;
-                            break labelWhite;
-                        default:
-                            success = moveWhitePiece(move);
+                            break;
+                        }
+
+                        boolean success2 = false;
+                        String move = null;
+                        while (!success2) {
+                            System.out.println("White move:");
+                            move = scanner.nextLine();
+                            if (checkSensicalMove(move)) {
+                                success2 = true;
+                            }
+                        }
+
+                        switch (move) {
+                            case "reset":
+                                Game newGame = new NewGame();
+                                newGame.playGame();
+                                this.gameEnd = true;
+                                break labelWhite;
+                            case "skip":
+                                break labelWhite;
+                            case "end":
+                                this.gameEnd = true;
+                                break labelWhite;
+                            default:
+                                success = moveWhitePiece(move);
+                        }
+                    }
+                } else {
+                    printBoard();
+                    boolean success = false;
+                    labelBlack:
+                    while (!success) {
+                        if (isBlackCheckmate()) {
+                            System.out.println("Black Checkmate. White Wins!");
+                            this.gameEnd = true;
+                            break;
+                        }
+                        if (isBlackCheck()) {
+                            System.out.println("Black Check!");
+                        }
+                        if (isBlackStalemate()) {
+                            System.out.println("Stalemate. Game ends in a Draw!");
+                            this.gameEnd = true;
+                            break;
+                        }
+
+                        boolean success2 = false;
+                        String move = null;
+                        while (!success2) {
+                            System.out.println("Black move:");
+                            move = scanner.nextLine();
+                            if (checkSensicalMove(move)) {
+                                success2 = true;
+                            }
+                        }
+
+                        switch (move) {
+                            case "reset":
+                                Game newGame = new NewGame();
+                                newGame.playGame();
+                                this.gameEnd = true;
+                                break labelBlack;
+                            case "skip":
+                                break labelBlack;
+                            case "end":
+                                this.gameEnd = true;
+                                break labelBlack;
+                            default:
+                                success = moveBlackPiece(move);
+                        }
                     }
                 }
-            } else {
-                printBoard();
-                boolean success = false;
-                labelBlack:
-                while(!success) {
-                    if (isBlackCheckmate()) {
-                        System.out.println("Black Checkmate. White Wins!");
-                        this.gameEnd = true;
-                        break;
-                    }
-                    if (isBlackCheck()) {
-                        System.out.println("Black Check!");
-                    }
-                    if (isBlackStalemate()) {
-                        System.out.println("Stalemate. Game ends in a Draw!");
-                        this.gameEnd = true;
-                        break;
-                    }
-                    System.out.println("Black move:");
-                    String move = scanner.nextLine();
-                    switch (move) {
-                        case "reset":
-                            Game newGame = new NewGame();
-                            newGame.playGame();
-                            this.gameEnd = true;
-                            break labelBlack;
-                        case "skip":
-                            break labelBlack;
-                        case "end":
-                            this.gameEnd = true;
-                            break labelBlack;
-                        default:
-                            success = moveBlackPiece(move);
-                    }
-                }
+                this.whiteTurn = !this.whiteTurn;
             }
-            this.whiteTurn = !this.whiteTurn;
+        }
+        else {
+            System.out.println("Sorry, one player games are not implemented yet. Please wait 1-2 business weeks for Zein to finish up his schoolwork.");
+        }
+    }
+
+    public boolean is2PlayerGame() {
+        while (true) {
+            System.out.println("Welcome to Chess! Implemented by Zein Sulayman.");
+            System.out.println("In this interface, chess moves are inputted in the format [a-h][1-8][a-h][1-8] \nrepresenting the coordinate of the piece you want to move first, then the coordinate of the space you want to move it into.");
+            System.out.println("Please enter either \"1\" or \"2\", indicating the number of players that would like to play.");
+            Scanner scanner = new Scanner(System.in);
+            String players = scanner.nextLine();
+            switch (players) {
+                case "1":
+                    return false;
+                case "2":
+                    return true;
+                default:
+                    System.out.println("Please enter either \"1\" or \"2\", indicating the number of players that would like to play.");
+            }
         }
     }
 
